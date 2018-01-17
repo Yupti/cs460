@@ -3,7 +3,7 @@ import string
 def main():
 
 	#caesarStart()
-	#caesarEncryptDecrypt("zzz", 2)
+	#caesarEncryptDecrypt("zzz",1)
 	# test = "hello"
 	# s = ''
 	# for i in test:
@@ -12,11 +12,16 @@ def main():
 	# print(len(s))
 	playfairCipher("test", "tester", 2)
 	# letters = string.ascii_lowercase
-	# test = 'test'
+	# test = ''
+	# test2 = []
+	# if test:
+	# 	print("a")
+	# else:
+	# 	print("b")
 	# print(letters)
 	# for i in range(25 - len(test)):
 	# 	test += letters[i]
-	# print(test)
+	print('hello')
 
 
 def caesarStart(): #text can be either plaintext or ciphertext
@@ -56,7 +61,11 @@ def caesarEncryptDecrypt(text, selection): #if greater than 120, minus 23
 
 def playfairCipher(text, keyword, selection): #IN PROGRESS
 	matrixContent = []
+	matrix = [] # creates empty list to fill with the letters
+	extra = '' # holds letter if the pair is a duplicate, uses for next pair if available
+	finalText = '' # for holding plain/ciphertext when finished
 	letters = list(string.ascii_lowercase)
+	size = len(text)
 
 	letters.remove('j') # removing to simplify matrix, NOT SURE IF LEGAL
 	print("Letters: ", letters)
@@ -70,16 +79,48 @@ def playfairCipher(text, keyword, selection): #IN PROGRESS
 		if singleLetter not in matrixContent:
 			matrixContent.append(singleLetter)
 
-	matrix = [] # creates empty list to fill with the letters
-
 	for i in range(5):
 		row = []
 		for j in range(5):
 			row.append(matrixContent.pop(0)) 
 		matrix.append(row)
 
-	print(matrix)
+	textLetters = [i for i in text] # holds all letters of plain/ciphertext
+	
+	print("Matrix:")
+	for i in matrix:
+		print(i)
 
+	while textLetters: # separate text 2 by 2, placing duplicate pairs in 'extras'
+		letter1 = ''
+		letter2 = ''
+		location1 = [] # holds (x,y) for letter1
+		location2 = [] # holds (x,y) for letter2
+
+		if extra: # checks if list is empty
+			letter1 = extra
+		else:
+			letter1 = textLetters.pop(0)
+		letter2 = textLetters.pop(0)
+
+		if letter1 == letter2: # checks if pair is duplicate or not
+			extra = letter2
+			letter2 = 'x' # the default letter if pair is duplicates
+
+		# print("Letter1:", letter1)
+		# print("Letter2:", letter2)
+
+		for i in range(5):
+			for j in range(5):
+				if matrix[i][j] == letter1:
+					location1.extend([i,j]) # holds coordinates
+				if matrix[i][j] == letter2:
+					location2.extend([i,j]) # same as above comment
+
+		# print("Coordinates1:", location1[0], " ", location1[1])
+		# print("Coordinates2:", location2[0], " ", location2[1])
+
+		
 
 if __name__ == '__main__':
 	main()
