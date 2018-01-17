@@ -11,7 +11,12 @@ def main():
 	# 		s += i
 	# print(len(s))
 	playfairCipher("test", "tester", 2)
-
+	# letters = string.ascii_lowercase
+	# test = 'test'
+	# print(letters)
+	# for i in range(25 - len(test)):
+	# 	test += letters[i]
+	# print(test)
 
 
 def caesarStart(): #text can be either plaintext or ciphertext
@@ -50,21 +55,31 @@ def caesarEncryptDecrypt(text, selection): #if greater than 120, minus 23
 		print("Ciphertext:", text, "\nPlaintext:", plaintext)
 
 def playfairCipher(text, keyword, selection): #IN PROGRESS
-	matrixContent = ''
-	letters = list(string.ascii_letters)
+	matrixContent = []
+	letters = list(string.ascii_lowercase)
 
 	letters.remove('j') # removing to simplify matrix, NOT SURE IF LEGAL
+	print("Letters: ", letters)
 
 	for i in keyword: # creates letters from keyword without duplicates
 		if i not in matrixContent:
-			matrixContent += i
+			matrixContent.append(i)
 
-	remainingSpace = 25 - len(matrixContent)
+	for i in range(25): # creates all needed letters for matrix
+		singleLetter = letters[i]
+		if singleLetter not in matrixContent:
+			matrixContent.append(singleLetter)
 
+	matrix = [] # creates empty list to fill with the letters
 
-	print(remainingSpace)
+	for i in range(5):
+		row = []
+		for j in range(5):
+			row.append(matrixContent.pop(0)) 
+		matrix.append(row)
 
-	#print(matrixContent)
+	print(matrix)
+
 
 if __name__ == '__main__':
 	main()
