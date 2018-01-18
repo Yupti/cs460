@@ -1,36 +1,55 @@
 import string
+# CAESAR: APPEND SENTENCE INTO SINGLE STRING, OR CREATE CASE THAT SKIPS SPACES
+# FAIRPLAY: APPEND SENTENCE INTO SINGLE STRING NO SPACES
 
 def main():
 
-	#caesarStart()
-	#caesarEncryptDecrypt("zzz",1)
-	# test = "hello"
-	# s = ''
-	# for i in test:
-	# 	if i not in s:
-	# 		s += i
-	# print(len(s))
-	playfairCipher("ipman", "tester")
-	# letters = string.ascii_lowercase
-	# test = ''
-	# test2 = []
-	# if test:
-	# 	print("a")
-	# else:
-	# 	print("b")
-	# print(letters)
-	# for i in range(25 - len(test)):
-	# 	test += letters[i]
-	print('hello')
+	# active = True
+	# while active:
+	# 	active = menu()
+	# print("Thank you for using this program!")
 
 
-def caesarStart(): #text can be either plaintext or ciphertext
-	cipher = list(string.ascii_lowercase)
-	for i in range(3): # creates list for caesar cipher
-		cipher.append(cipher.pop(0))
-	print(cipher)
-	cipher.remove('j')
-	print(cipher)
+def menu():
+	continueChoice = 1
+	compressString = '' # when user enters a plain/ciphertext to work on, compresses letters without whitespace and stores here
+	choice = input("Choices\n1.) Caesar Cipher\n2.) Playfair Cipher\n3.) Vignere Cipher\nChoose a number:")
+
+	if choice == 1:
+		text = input("Enter a word or sentence you wish to encrypt/decrypt")
+		text = text.lower()
+		choice2 = input("Enter the number for desired action: (1) Encrypt (2) Decrypt (NOTE: if invalid selection, decrypts by default)")
+
+		compressString = wordCompress(text)
+
+		caesarEncryptDecrypt(compressString, choice2) 
+
+	elif choice == 2:
+		text = input("Enter a word or sentence you wish to encrypt/decrypt")
+		text = text.lower()
+		keyword = input("Enter a keyword to use for encryption/decryption")
+
+		compressString = wordCompress(text)
+
+		playfairCipher(compressString, keyword)
+
+	elif choice == 3:
+		print("Calls Vignere ditto")
+	else:
+		continueChoice = input("Incorrect choice selected, would you like to retry or exit the program?\n1.) Retry\n2.) Exit\n(If invalid choice chosen, exits by default.)")
+
+	if continueChoice == 1: # lets main() loop know to continue
+		return True
+	else: # quits entire program
+		return False 
+
+def wordCompress(text):
+	compressedWord = ''
+	for i in text:
+		if ord(i) != 32:
+			compressedWord += i
+
+	return compressedWord
 
 def caesarEncryptDecrypt(text, selection): #if greater than 120, minus 23
 	if selection == 1: # for encryption
@@ -124,8 +143,8 @@ def playfairCipher(text, keyword): #IN PROGRESS, NEED TO RESOLVE I/J INCIDENT
 				if matrix[i][j] == letter2:
 					location2.extend([i,j]) # same as above comment
 
-		print("Coordinates1:", location1[0], " ", location1[1])
-		print("Coordinates2:", location2[0], " ", location2[1])
+		# print("Coordinates1:", location1[0], " ", location1[1])
+		# print("Coordinates2:", location2[0], " ", location2[1])
 
 		if location1[0] == location2[0]: # case where they are in same row
 			pointer1 = location1[1] + 1
