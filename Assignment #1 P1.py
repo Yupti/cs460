@@ -10,7 +10,7 @@ def main():
 	# 	if i not in s:
 	# 		s += i
 	# print(len(s))
-	playfairCipher("test", "tester", 2)
+	playfairCipher("ipman", "tester", 2)
 	# letters = string.ascii_lowercase
 	# test = ''
 	# test2 = []
@@ -59,7 +59,7 @@ def caesarEncryptDecrypt(text, selection): #if greater than 120, minus 23
 
 		print("Ciphertext:", text, "\nPlaintext:", plaintext)
 
-def playfairCipher(text, keyword, selection): #IN PROGRESS
+def playfairCipher(text, keyword, selection): #IN PROGRESS, NEED TO RESOLVE I/J INCIDENT
 	matrixContent = []
 	matrix = [] # creates empty list to fill with the letters
 	extra = '' # holds letter if the pair is a duplicate, uses for next pair if available
@@ -87,7 +87,7 @@ def playfairCipher(text, keyword, selection): #IN PROGRESS
 
 	textLetters = [i for i in text] # holds all letters of plain/ciphertext
 	
-	print("Matrix:")
+	print("Matrix:") # only for show, will remove later
 	for i in matrix:
 		print(i)
 
@@ -96,19 +96,26 @@ def playfairCipher(text, keyword, selection): #IN PROGRESS
 		letter2 = ''
 		location1 = [] # holds (x,y) for letter1
 		location2 = [] # holds (x,y) for letter2
+		pointer1 = 0 # pointers to use for locating the encrypted/decrypted letter to use
+		pointer2 = 0
 
-		if extra: # checks if list is empty
+		if extra: # checks 'extra' contains a letter
 			letter1 = extra
+			extra = '' # resets to empty
 		else:
 			letter1 = textLetters.pop(0)
-		letter2 = textLetters.pop(0)
+
+		if textLetters: # checks if contains letters
+			letter2 = textLetters.pop(0)
+		else:
+			letter2 = 'x'
 
 		if letter1 == letter2: # checks if pair is duplicate or not
 			extra = letter2
 			letter2 = 'x' # the default letter if pair is duplicates
 
-		# print("Letter1:", letter1)
-		# print("Letter2:", letter2)
+		print("Letter1:", letter1)
+		print("Letter2:", letter2)
 
 		for i in range(5):
 			for j in range(5):
@@ -117,10 +124,41 @@ def playfairCipher(text, keyword, selection): #IN PROGRESS
 				if matrix[i][j] == letter2:
 					location2.extend([i,j]) # same as above comment
 
-		# print("Coordinates1:", location1[0], " ", location1[1])
-		# print("Coordinates2:", location2[0], " ", location2[1])
+		print("Coordinates1:", location1[0], " ", location1[1])
+		print("Coordinates2:", location2[0], " ", location2[1])
 
-		
+		if location1[0] == location2[0]: # case where they are in same row
+			pointer1 = location1[1] + 1
+			pointer2 = location2[1] + 1 # OK FOR NOW, NEEDS TESTING
+
+			if pointer1 > 4: # to the right is out of bounds, resets to 0
+				pointer1 = 0
+
+			if pointer2 > 4: # same comments as above
+				pointer2 = 0
+
+			finalText += matrix[location1[0]][pointer1] 
+			finalText += matrix[location2[0]][pointer2]
+
+		elif location1[1] == location2[1]: # case where they are in same column
+			pointer1 = location1[0] + 1
+			pointer2 = location2[0] + 1 # OK FOR NOW, NEEDS TESTING
+
+			if pointer1 > 4: # to the right is out of bounds, resets to 0
+				pointer1 = 0
+
+			if pointer2 > 4: # same comments as above
+				pointer2 = 0
+
+			finalText += matrix[pointer1][location1[1]]
+			finalText += matrix[pointer2][location2[1]]
+
+		else: # case of different rows, different columns
+			finalText += matrix[location1[0]][location2[1]]
+			finalText += matrix[location2[0]][location1[1]]
+
+
+		print("Final", finalText)
 
 if __name__ == '__main__':
 	main()
