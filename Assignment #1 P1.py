@@ -10,7 +10,7 @@ def main():
 	# 	if i not in s:
 	# 		s += i
 	# print(len(s))
-	playfairCipher("ipman", "tester", 2)
+	playfairCipher("ipman", "tester")
 	# letters = string.ascii_lowercase
 	# test = ''
 	# test2 = []
@@ -59,7 +59,7 @@ def caesarEncryptDecrypt(text, selection): #if greater than 120, minus 23
 
 		print("Ciphertext:", text, "\nPlaintext:", plaintext)
 
-def playfairCipher(text, keyword, selection): #IN PROGRESS, NEED TO RESOLVE I/J INCIDENT
+def playfairCipher(text, keyword): #IN PROGRESS, NEED TO RESOLVE I/J INCIDENT
 	matrixContent = []
 	matrix = [] # creates empty list to fill with the letters
 	extra = '' # holds letter if the pair is a duplicate, uses for next pair if available
