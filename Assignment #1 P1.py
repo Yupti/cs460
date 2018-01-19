@@ -1,47 +1,49 @@
 import string
 # CAESAR: APPEND SENTENCE INTO SINGLE STRING, OR CREATE CASE THAT SKIPS SPACES
 # FAIRPLAY: APPEND SENTENCE INTO SINGLE STRING NO SPACES
-
+# VIGENERE: MAKE SURE KEY IS SHORTER THAN PLAIN/CIPHERTEXT
 def main():
 
-	# active = True
-	# while active:
-	# 	active = menu()
-	# print("Thank you for using this program!")
-
+	active = True
+	while active:
+		active = menu()
+	print("Thank you for using this program!")
+	# vigenereEncryptDecrypt("supercalifragilisticexpealidocious","superback", 1)
 
 def menu():
-	continueChoice = 1
+	continueChoice = 0
 	compressString = '' # when user enters a plain/ciphertext to work on, compresses letters without whitespace and stores here
-	choice = input("Choices\n1.) Caesar Cipher\n2.) Playfair Cipher\n3.) Vignere Cipher\nChoose a number:")
-
-	if choice == 1:
-		text = input("Enter a word or sentence you wish to encrypt/decrypt")
+	choice = int(input("Choices\n1.) Caesar Cipher\n2.) Playfair Cipher\n3.) Vignere Cipher\n4.) Exit\nChoose a number: "))
+	if choice == 1: # caesar cypher
+		text = input("Enter a word or sentence you wish to encrypt/decrypt: ")
 		text = text.lower()
-		choice2 = input("Enter the number for desired action: (1) Encrypt (2) Decrypt (NOTE: if invalid selection, decrypts by default)")
+		choice2 = int(input("Enter the number for desired action: (1) Encrypt (2) Decrypt: "))
 
 		compressString = wordCompress(text)
 
 		caesarEncryptDecrypt(compressString, choice2) 
 
-	elif choice == 2:
-		text = input("Enter a word or sentence you wish to encrypt/decrypt")
+	elif choice == 2: # playfair cypher
+		text = input("Enter a word or sentence you wish to encrypt/decrypt: ")
 		text = text.lower()
-		keyword = input("Enter a keyword to use for encryption/decryption")
+		keyword = input("Enter a keyword to use for encryption/decryption: ")
+		choice2 = int(input("Enter the number for desired action: (1) Encrypt (2) Decrypt: ")) 
 
 		compressString = wordCompress(text)
 
-		playfairCipher(compressString, keyword)
+		playfairCipher(compressString, keyword, choice2)
 
 	elif choice == 3:
 		print("Calls Vignere ditto")
+	elif choice == 4:
+		return False
 	else:
-		continueChoice = input("Incorrect choice selected, would you like to retry or exit the program?\n1.) Retry\n2.) Exit\n(If invalid choice chosen, exits by default.)")
+		continueChoice = int(input("Incorrect choice selected, would you like to retry or exit the program?\n1.) Exit\n2.) Retry\n(If invalid choice chosen, retries by default.): "))
 
-	if continueChoice == 1: # lets main() loop know to continue
-		return True
-	else: # quits entire program
-		return False 
+	if continueChoice == 1: 
+		return False
+	else: 
+		return True 
 
 def wordCompress(text):
 	compressedWord = ''
@@ -52,6 +54,7 @@ def wordCompress(text):
 	return compressedWord
 
 def caesarEncryptDecrypt(text, selection): #if greater than 120, minus 23
+	text = text.lower()
 	if selection == 1: # for encryption
 		ciphertext = ''
 		for i in text:
@@ -65,7 +68,7 @@ def caesarEncryptDecrypt(text, selection): #if greater than 120, minus 23
 
 		print("Plaintext:", text, "\nCiphertext:", ciphertext)
 
-	else: # for decryption
+	elif selection == 2: # for decryption
 		plaintext = ''
 		for i in text:
 			i = ord(i)
@@ -78,7 +81,10 @@ def caesarEncryptDecrypt(text, selection): #if greater than 120, minus 23
 
 		print("Ciphertext:", text, "\nPlaintext:", plaintext)
 
-def playfairCipher(text, keyword): #IN PROGRESS, NEED TO RESOLVE I/J INCIDENT
+	else:
+		print("Invalid choice, returning to main menu.")
+
+def playfairCipher(text, keyword, selection): #IN PROGRESS, NEED TO RESOLVE I/J INCIDENT
 	matrixContent = []
 	matrix = [] # creates empty list to fill with the letters
 	extra = '' # holds letter if the pair is a duplicate, uses for next pair if available
@@ -87,7 +93,7 @@ def playfairCipher(text, keyword): #IN PROGRESS, NEED TO RESOLVE I/J INCIDENT
 	size = len(text)
 
 	letters.remove('j') # removing to simplify matrix, NOT SURE IF LEGAL
-	print("Letters: ", letters)
+	# print("Letters: ", letters)
 
 	for i in keyword: # creates letters from keyword without duplicates
 		if i not in matrixContent:
@@ -106,9 +112,9 @@ def playfairCipher(text, keyword): #IN PROGRESS, NEED TO RESOLVE I/J INCIDENT
 
 	textLetters = [i for i in text] # holds all letters of plain/ciphertext
 	
-	print("Matrix:") # only for show, will remove later
-	for i in matrix:
-		print(i)
+	# print("Matrix:") # only for show, will remove later
+	# for i in matrix:
+	# 	print(i)
 
 	while textLetters: # separate text 2 by 2, placing duplicate pairs in 'extras'
 		letter1 = ''
@@ -133,8 +139,8 @@ def playfairCipher(text, keyword): #IN PROGRESS, NEED TO RESOLVE I/J INCIDENT
 			extra = letter2
 			letter2 = 'x' # the default letter if pair is duplicates
 
-		print("Letter1:", letter1)
-		print("Letter2:", letter2)
+		# print("Letter1:", letter1)
+		# print("Letter2:", letter2)
 
 		for i in range(5):
 			for j in range(5):
@@ -146,38 +152,131 @@ def playfairCipher(text, keyword): #IN PROGRESS, NEED TO RESOLVE I/J INCIDENT
 		# print("Coordinates1:", location1[0], " ", location1[1])
 		# print("Coordinates2:", location2[0], " ", location2[1])
 
-		if location1[0] == location2[0]: # case where they are in same row
-			pointer1 = location1[1] + 1
-			pointer2 = location2[1] + 1 # OK FOR NOW, NEEDS TESTING
+		if selection == 1: # FOR ENCRYPTION
+			if location1[0] == location2[0]: # case where they are in same row
+				pointer1 = location1[1] + 1
+				pointer2 = location2[1] + 1 # OK FOR NOW, NEEDS TESTING
 
-			if pointer1 > 4: # to the right is out of bounds, resets to 0
-				pointer1 = 0
+				if pointer1 > 4: # to the right is out of bounds, resets to 0
+					pointer1 = 0
 
-			if pointer2 > 4: # same comments as above
-				pointer2 = 0
+				if pointer2 > 4: # same comments as above
+					pointer2 = 0
 
-			finalText += matrix[location1[0]][pointer1] 
-			finalText += matrix[location2[0]][pointer2]
+				finalText += matrix[location1[0]][pointer1] 
+				finalText += matrix[location2[0]][pointer2]
 
-		elif location1[1] == location2[1]: # case where they are in same column
-			pointer1 = location1[0] + 1
-			pointer2 = location2[0] + 1 # OK FOR NOW, NEEDS TESTING
+			elif location1[1] == location2[1]: # case where they are in same column
+				pointer1 = location1[0] + 1
+				pointer2 = location2[0] + 1 # encrypt +1, decrypt -1
 
-			if pointer1 > 4: # to the right is out of bounds, resets to 0
-				pointer1 = 0
+				if pointer1 > 4: # to the right is out of bounds, resets to 0
+					pointer1 = 0
 
-			if pointer2 > 4: # same comments as above
-				pointer2 = 0
+				if pointer2 > 4: # same comments as above
+					pointer2 = 0
 
-			finalText += matrix[pointer1][location1[1]]
-			finalText += matrix[pointer2][location2[1]]
+				finalText += matrix[pointer1][location1[1]]
+				finalText += matrix[pointer2][location2[1]]
 
-		else: # case of different rows, different columns
-			finalText += matrix[location1[0]][location2[1]]
-			finalText += matrix[location2[0]][location1[1]]
+			else: # case of different rows, different columns
+				finalText += matrix[location1[0]][location2[1]]
+				finalText += matrix[location2[0]][location1[1]]
+
+		elif selection == 2: # FOR DECRYPTION
+			if location1[0] == location2[0]: # case where they are in same row
+				pointer1 = location1[1] - 1
+				pointer2 = location2[1] - 1 # OK FOR NOW, NEEDS TESTING
+
+				if pointer1 < 0: # to the right is out of bounds, resets to 0
+					pointer1 = 4
+
+				if pointer2 < 0: # same comments as above
+					pointer2 = 4
+
+				finalText += matrix[location1[0]][pointer1] 
+				finalText += matrix[location2[0]][pointer2]
+
+			elif location1[1] == location2[1]: # case where they are in same column
+				pointer1 = location1[0] - 1
+				pointer2 = location2[0] - 1 # encrypt +1, decrypt -1
+
+				if pointer1 < 0: # to the right is out of bounds, resets to 0
+					pointer1 = 4
+
+				if pointer2 < 0: # same comments as above
+					pointer2 = 4
+
+				finalText += matrix[pointer1][location1[1]]
+				finalText += matrix[pointer2][location2[1]]
+
+			else: # case of different rows, different columns
+				finalText += matrix[location1[0]][location2[1]]
+				finalText += matrix[location2[0]][location1[1]]
+
+	print("Cyphertext:", text, "\nKeyword:", keyword, "\nPlaintext:", finalText)
 
 
-		print("Final", finalText)
+def vigenereEncryptDecrypt(text, keyword, selection): # NOTE: keyword should be shorter than text
+	allLetters = string.ascii_lowercase
+	letters = []
+	numbers = []
+	textToNumbers = []
+	keywordToNumbers = []
+	ciphertextNumbers = []
+	keyLength = len(keyword)
+	keywordCounter = 0
+	finalText = ''
+
+	for i in range(26):
+		letters.append(allLetters[i])
+		numbers.append(i)
+
+	vigenere = dict(zip(letters, numbers)) # dictionary holding values for each letter
+
+	for i in text: # holds numbers for text
+		for j in vigenere:
+			if i == j:
+				textToNumbers.append(vigenere[j])
+
+	for i in keyword: # holds numbers for keyword
+		for j in vigenere:
+			if i == j:
+				keywordToNumbers.append(vigenere[j])
+
+	if selection == 1: # for encryption
+		for i in range(len(text)): # for iterating through entire list of text
+			if keywordCounter == keyLength:
+				keywordCounter = 0
+			ciphertextNumbers.append((textToNumbers[i] + keywordToNumbers[keywordCounter]) % 26)
+			keywordCounter += 1
+
+		# print("Keyword:", keywordToNumbers)
+		# print("Text:", textToNumbers)
+		# print("Result:", ciphertextNumbers)
+
+		for i in ciphertextNumbers:
+			for j in vigenere:
+				if i == vigenere[j]:
+					finalText += j
+	elif selection == 2: # for decryption
+		for i in range(len(text)): # for iterating through entire list of text
+			if keywordCounter == keyLength:
+				keywordCounter = 0
+			ciphertextNumbers.append((textToNumbers[i] - keywordToNumbers[keywordCounter]) % 26)
+			keywordCounter += 1
+
+		# print("Keyword:", keywordToNumbers)
+		# print("Text:", textToNumbers)
+		# print("Result:", ciphertextNumbers)
+
+		for i in ciphertextNumbers:
+			for j in vigenere:
+				if i == vigenere[j]:
+					finalText += j
+	else:
+		print("Invalid choice, returning to main menu.")
+ 
 
 if __name__ == '__main__':
 	main()
