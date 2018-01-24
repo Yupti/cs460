@@ -41,8 +41,7 @@ def menu():
 
 		compressString = wordCompress(text)
 
-		vigenereEncryptDecrypt(text, keyword, choice2
-			)
+		vigenereEncryptDecrypt(compressString, keyword, choice2)
 	elif choice == 4:
 		return False
 	else:
@@ -105,8 +104,11 @@ def playfairCipher(text, keyword, selection): #IN PROGRESS, NEED TO RESOLVE I/J 
 		# print("Letters: ", letters)
 
 		for i in keyword: # creates letters from keyword without duplicates
-			if i not in matrixContent:
-				matrixContent.append(i)
+			letterTemp = i
+			if letterTemp == 'j': #TEST
+				letterTemp = 'i'
+			if letterTemp not in matrixContent:
+				matrixContent.append(letterTemp)
 
 		for i in range(25): # creates all needed letters for matrix
 			singleLetter = letters[i]
@@ -121,9 +123,9 @@ def playfairCipher(text, keyword, selection): #IN PROGRESS, NEED TO RESOLVE I/J 
 
 		textLetters = [i for i in text] # holds all letters of plain/ciphertext
 	
-		# print("Matrix:") # only for show, will remove later
-		# for i in matrix:
-		# 	print(i)
+		print("Matrix:") # only for show, will remove later
+		for i in matrix:
+			print(i)
 
 		while textLetters: # separate text 2 by 2, placing duplicate pairs in 'extras'
 			letter1 = ''
@@ -132,6 +134,11 @@ def playfairCipher(text, keyword, selection): #IN PROGRESS, NEED TO RESOLVE I/J 
 			location2 = [] # holds (x,y) for letter2
 			pointer1 = 0 # pointers to use for locating the encrypted/decrypted letter to use
 			pointer2 = 0
+
+			if letter1 == 'j': #TEST
+				letter1 = 'i'
+			if letter2 == 'j':
+				letter2 = 'i'
 
 			if extra: # checks 'extra' contains a letter
 				letter1 = extra
