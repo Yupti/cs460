@@ -1,14 +1,11 @@
 import string
-# CAESAR: APPEND SENTENCE INTO SINGLE STRING, OR CREATE CASE THAT SKIPS SPACES
-# FAIRPLAY: APPEND SENTENCE INTO SINGLE STRING NO SPACES
-# VIGENERE: MAKE SURE KEY IS SHORTER THAN PLAIN/CIPHERTEXT
+
 def main():
 
 	active = True
 	while active:
 		active = menu()
 	print("Thank you for using this program!")
-	# vigenereEncryptDecrypt("supercalifragilisticexpealidocious","superback", 1)
 
 def menu():
 	continueChoice = 0
@@ -34,6 +31,7 @@ def menu():
 		playfairCipher(compressString, keyword, choice2)
 
 	elif choice == 3:
+		print("NOTE: word/sentence to encrypt/decrypt MUST be longer than keyword")
 		text = input("Enter a word or sentence you wish to encrypt/decrypt: ")
 		text = text.lower()
 		keyword = input("Enter a keyword to use for encryption/decryption: ")
@@ -41,7 +39,10 @@ def menu():
 
 		compressString = wordCompress(text)
 
-		vigenereEncryptDecrypt(compressString, keyword, choice2)
+		if len(compressString) < len(keyword):
+			print("Unable to encrypt/decrypt, keyword is longer than the plain/ciphertext.")
+		else:
+			vigenereEncryptDecrypt(compressString, keyword, choice2)
 	elif choice == 4:
 		return False
 	else:
@@ -60,7 +61,7 @@ def wordCompress(text):
 
 	return compressedWord
 
-def caesarEncryptDecrypt(text, selection): #if greater than 120, minus 23
+def caesarEncryptDecrypt(text, selection): 
 	text = text.lower()
 	if selection == 1: # for encryption
 		ciphertext = ''
@@ -91,7 +92,7 @@ def caesarEncryptDecrypt(text, selection): #if greater than 120, minus 23
 	else:
 		print("Invalid choice, returning to main menu.")
 
-def playfairCipher(text, keyword, selection): #IN PROGRESS, NEED TO RESOLVE I/J INCIDENT
+def playfairCipher(text, keyword, selection): 
 	if selection == 1 or selection == 2:
 		matrixContent = []
 		matrix = [] # creates empty list to fill with the letters
@@ -100,12 +101,11 @@ def playfairCipher(text, keyword, selection): #IN PROGRESS, NEED TO RESOLVE I/J 
 		letters = list(string.ascii_lowercase)
 		size = len(text)
 
-		letters.remove('j') # removing to simplify matrix, NOT SURE IF LEGAL
-		# print("Letters: ", letters)
+		letters.remove('j') # removing to simplify matrix
 
 		for i in keyword: # creates letters from keyword without duplicates
 			letterTemp = i
-			if letterTemp == 'j': #TEST
+			if letterTemp == 'j': 
 				letterTemp = 'i'
 			if letterTemp not in matrixContent:
 				matrixContent.append(letterTemp)
@@ -135,7 +135,7 @@ def playfairCipher(text, keyword, selection): #IN PROGRESS, NEED TO RESOLVE I/J 
 			pointer1 = 0 # pointers to use for locating the encrypted/decrypted letter to use
 			pointer2 = 0
 
-			if letter1 == 'j': #TEST
+			if letter1 == 'j': 
 				letter1 = 'i'
 			if letter2 == 'j':
 				letter2 = 'i'
@@ -155,9 +155,6 @@ def playfairCipher(text, keyword, selection): #IN PROGRESS, NEED TO RESOLVE I/J 
 				extra = letter2
 				letter2 = 'x' # the default letter if pair is duplicates
 
-			# print("Letter1:", letter1)
-			# print("Letter2:", letter2)
-
 			for i in range(5):
 				for j in range(5):
 					if matrix[i][j] == letter1:
@@ -165,13 +162,10 @@ def playfairCipher(text, keyword, selection): #IN PROGRESS, NEED TO RESOLVE I/J 
 					if matrix[i][j] == letter2:
 						location2.extend([i,j]) # same as above comment
 
-			# print("Coordinates1:", location1[0], " ", location1[1])
-			# print("Coordinates2:", location2[0], " ", location2[1])
-
 			if selection == 1: # FOR ENCRYPTION
 				if location1[0] == location2[0]: # case where they are in same row
 					pointer1 = location1[1] + 1
-					pointer2 = location2[1] + 1 # OK FOR NOW, NEEDS TESTING
+					pointer2 = location2[1] + 1 
 
 					if pointer1 > 4: # to the right is out of bounds, resets to 0
 						pointer1 = 0
@@ -202,7 +196,7 @@ def playfairCipher(text, keyword, selection): #IN PROGRESS, NEED TO RESOLVE I/J 
 			elif selection == 2: # FOR DECRYPTION
 				if location1[0] == location2[0]: # case where they are in same row
 					pointer1 = location1[1] - 1
-					pointer2 = location2[1] - 1 # OK FOR NOW, NEEDS TESTING
+					pointer2 = location2[1] - 1 
 
 					if pointer1 < 0: # to the right is out of bounds, resets to 0
 						pointer1 = 4
@@ -289,10 +283,6 @@ def vigenereEncryptDecrypt(text, keyword, selection): # NOTE: keyword should be 
 				keywordCounter = 0
 			ciphertextNumbers.append((textToNumbers[i] - keywordToNumbers[keywordCounter]) % 26)
 			keywordCounter += 1
-
-		# print("Keyword:", keywordToNumbers)
-		# print("Text:", textToNumbers)
-		# print("Result:", ciphertextNumbers)
 
 		for i in ciphertextNumbers:
 			for j in vigenere:

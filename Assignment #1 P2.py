@@ -13,8 +13,7 @@ def main():
 
 	decryptLetters = 'etaoinshrdlcumwfgypbvkjxqc'
 	
-	# print("Regular: ", letters)
-	# print("Key: ", randomKey)
+	print("Randomized key used:", randomKey)
 
 	refDictionary = dict(zip(letters, randomKey))
 	plaintext = input("Enter a plaintext to encode: ")
@@ -36,8 +35,9 @@ def encrypt(text, refDictionary):
 	return ciphertext
 
 def frequencyAttack(letters, ciphertext, decryptLetters):
+	plaintext = '' 
 	letterCounter = []
-	indexFrequency = []
+	newOrderLetters = []
 
 	for i in letters:
 		counter = 0
@@ -47,20 +47,40 @@ def frequencyAttack(letters, ciphertext, decryptLetters):
 
 		letterCounter.append(counter)
 
-	print(letterCounter)
+	letterCounterList = dict(zip(letters, letterCounter))
 
-	while letterCounter:
-		maxNumLetters = 0
-		letterIndex = 0
+	decryptLettersList = list(decryptLetters)
 
-		for i in letterCounter:
-			if i > maxNumLetters:
-				maxNumLetters = i
-				letterIndex = letterCounter.index(i)
 
-		letterCounter.pop(letterIndex) # NEEDS TESTING pops the value out of letterCounter
+	while letterCounterList:
+		highestFrequency = 0
+		letterIndex = ''
+		newLetter = ''
+		counter = 0
 
-	print(letterIndex) # good
+		for i in letterCounterList:
+			if letterCounterList[i] > highestFrequency:
+				highestFrequency = letterCounterList[i]
+				letterIndex = counter # to remove letter with this index later
+				newLetter = i # to hold letter to add to newOrderLetters
+			counter += 1
+
+		if highestFrequency == 0: # case where all other letters have frequency of 0
+			letterIndex = 0
+			newLetter = next(iter(letterCounterList))
+
+
+		newOrderLetters.append(newLetter)
+		del letterCounterList[newLetter] 
+
+	convertList = dict(zip(newOrderLetters, decryptLettersList))
+
+	for i in ciphertext:
+		for j in convertList:
+			if i == j:
+				plaintext += convertList[j]
+
+	print("Plaintext:", plaintext)
 
 if __name__ == '__main__':
 	main()
