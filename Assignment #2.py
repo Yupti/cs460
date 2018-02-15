@@ -7,7 +7,8 @@ def main():
 	aes_round = 1
 	round_num = 4
 
-	w0, w1, w2, w3 = indiv_words(hex_values) #values hold individual hex values
+	w0, w1, w2, w3 = manual_input()
+	# w0, w1, w2, w3 = indiv_words(hex_values) #values hold individual hex values
 	total_key = w0 + w1 + w2 + w3
 
 	print("Round 0: ")
@@ -79,6 +80,15 @@ def indiv_words(hex_values):
 			w4 += val[1]
 
 	return w1, w2, w3, w4
+
+def manual_input(): # for grader to manually create the 4 words
+	temp_list = []
+	print("When inputting hex values, please enter only 8 hex values like so: (abcd1234)")
+
+	for i in range(4):
+		temp_list.append(input("Enter a value for word " + str(i) + ": "))
+
+	return temp_list.pop(0), temp_list.pop(0), temp_list.pop(0), temp_list.pop(0)
 
 def g_function(word, round):
 	# this section for shifting
