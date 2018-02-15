@@ -1,7 +1,6 @@
 import random
 
 def main():
-	
 	running = True
 
 	while running:
@@ -16,7 +15,7 @@ def main():
 		else:
 			print("Incorrect choice chose, please try again.\n")
 	
-def rounds(w0, w1, w2, w3):
+def rounds(w0, w1, w2, w3): # Runs the rounds for subkey generation
 	aes_round = 1
 	round_num = 4
 	total_key = w0 + w1 + w2 + w3
@@ -58,7 +57,7 @@ def rounds(w0, w1, w2, w3):
 
 		aes_round += 1
 
-	print("\nTotal Key:")
+	print("\nTotal Key:") # prints completed key
 	for i in range(len(total_key)):
 		if i % 32 == 0:
 			print("")
@@ -66,10 +65,19 @@ def rounds(w0, w1, w2, w3):
 
 	print("\n")
 
-def random_key_generation():
+def manual_input(): # for manual input of words in rounds
+	temp_list = []
+	print("When inputting hex values, please enter only 8 hex values like so: (abcd1234)")
+
+	for i in range(4):
+		temp_list.append(input("Enter a value for word " + str(i) + ": "))
+
+	rounds(temp_list.pop(0), temp_list.pop(0), temp_list.pop(0), temp_list.pop(0))
+
+def random_key_generation(): # for randomly generated words in rounds
 	hex_values = '0123456789abcdef'
 	w1 = ''; w2 = ''; w3 = ''; w4 = ''
-	word_matrix = [] # overall matrix item
+	word_matrix = [] 
 
 	for i in range(16):
 		indiv_values = (random.choice(hex_values), random.choice(hex_values))
@@ -92,26 +100,8 @@ def random_key_generation():
 
 	rounds(w1, w2, w3, w4)
 
-def manual_input(): # for grader to manually create the 4 words
-	temp_list = []
-	print("When inputting hex values, please enter only 8 hex values like so: (abcd1234)")
-
-	for i in range(4):
-		temp_list.append(input("Enter a value for word " + str(i) + ": "))
-
-	rounds(temp_list.pop(0), temp_list.pop(0), temp_list.pop(0), temp_list.pop(0))
-
-def g_function(word, round):
-	# this section for shifting
-	new_word = "0x"
-
-	shifted = word[2:] + word[:2]
-
-	int_values = []
-	int_values.extend(shifted)
-	
-	# shifts completed
-	# S box
+def g_function(word, round): # g function for translating word 3 for continuous rounds
+	new_word = '0x'
 	Sbox = (
             0x63, 0x7C, 0x77, 0x7B, 0xF2, 0x6B, 0x6F, 0xC5, 0x30, 0x01, 0x67, 0x2B, 0xFE, 0xD7, 0xAB, 0x76,
             0xCA, 0x82, 0xC9, 0x7D, 0xFA, 0x59, 0x47, 0xF0, 0xAD, 0xD4, 0xA2, 0xAF, 0x9C, 0xA4, 0x72, 0xC0,
@@ -131,43 +121,39 @@ def g_function(word, round):
             0x8C, 0xA1, 0x89, 0x0D, 0xBF, 0xE6, 0x42, 0x68, 0x41, 0x99, 0x2D, 0x0F, 0xB0, 0x54, 0xBB, 0x16
             )
 
-	
-	# for two letters/numbers going in, 1st num/letter (n1) is int(n1) x 16 + int(n2) for location in tuple
-	new_word = '0x'
+	shifted = word[2:] + word[:2] # byte shift left
+	int_values = []
+	int_values.extend(shifted)
 
-	while int_values:
+	while int_values: # for locating the values in the S-box
 		temp = int(int_values.pop(0), 16)
-
 		temp2 = int(int_values.pop(0), 16)
-
 		temp *= 16
 		temp += temp2 # gets location in Sbox 
 
 		value = str(hex(Sbox[temp]))
 		new_word += s_box_extract(value)
 
-	rc_value = rc_extract(round) # 1st round, index 1st - 1 = 0
+	rc_value = rc_extract(round) # determines Round Constant value to use based on current round
 	final_word = hex(int(new_word, 16) ^ int(rc_value, 16))
 
 	return final_word[2:]
 
-def s_box_extract(hex1):
+def s_box_extract(hex1): # properly generates hex values from S-box
 	if len(hex1) == 3:
 		return "0" + hex1[2]
 	else:
 		return hex1[2:]
 
-def rc_extract(round):
+def rc_extract(round): # generates Round Constant based on current round
 	RC = (0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1B, 0x36)
 	value = str(hex(RC[round - 1]))
-	# print("Value:", value)
-	if len(value) == 1: #single number
+	if len(value) == 1: 
 		return "0" + value + "000000"
 	else:
 		return value + "000000"
 
-def hex_append(hex_val):
-	# print("LENGTH:", len(hex_val))
+def hex_append(hex_val): # fixes gaps in hex values
 	if len(hex_val) != 10:
 		while len(hex_val) != 10:
 			hex_val += "0"
