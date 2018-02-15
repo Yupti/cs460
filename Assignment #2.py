@@ -1,14 +1,24 @@
 import random
 
 def main():
-	hex_values = '0123456789abcdef'
-	w0 = ''; w1 = ''; w2 = ''; w3 = ''
-	total_key = ''
+	
+	running = True
+
+	while running:
+		choice = int(input("Enter a command:\n(1) manual input for a word\n(2) randomly generated words\n(3) Exit program\nChoice: "))
+		if choice == 1:
+			manual_input()
+		elif choice == 2:
+			random_key_generation() #values hold individual hex values
+		elif choice == 3:
+			print("Thank you for using this program!")
+			running = False
+		else:
+			print("Incorrect choice chose, please try again.\n")
+	
+def rounds(w0, w1, w2, w3):
 	aes_round = 1
 	round_num = 4
-
-	w0, w1, w2, w3 = manual_input()
-	# w0, w1, w2, w3 = indiv_words(hex_values) #values hold individual hex values
 	total_key = w0 + w1 + w2 + w3
 
 	print("Round 0: ")
@@ -54,9 +64,10 @@ def main():
 			print("")
 		print(total_key[i], end = '')
 
-	print("")
+	print("\n")
 
-def indiv_words(hex_values):
+def random_key_generation():
+	hex_values = '0123456789abcdef'
 	w1 = ''; w2 = ''; w3 = ''; w4 = ''
 	word_matrix = [] # overall matrix item
 
@@ -79,7 +90,7 @@ def indiv_words(hex_values):
 			w4 += val[0]
 			w4 += val[1]
 
-	return w1, w2, w3, w4
+	rounds(w1, w2, w3, w4)
 
 def manual_input(): # for grader to manually create the 4 words
 	temp_list = []
@@ -88,7 +99,7 @@ def manual_input(): # for grader to manually create the 4 words
 	for i in range(4):
 		temp_list.append(input("Enter a value for word " + str(i) + ": "))
 
-	return temp_list.pop(0), temp_list.pop(0), temp_list.pop(0), temp_list.pop(0)
+	rounds(temp_list.pop(0), temp_list.pop(0), temp_list.pop(0), temp_list.pop(0))
 
 def g_function(word, round):
 	# this section for shifting
