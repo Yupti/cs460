@@ -16,7 +16,7 @@ def main():
 	print("word 2:", "0x" + w2)
 	print("word 3:", "0x" + w3)
 	w3_gee = g_function(w3, aes_round)
-	#print("w4:", w3_gee)
+
 	aes_round += 1
 
 	while aes_round <= 11:
@@ -44,12 +44,16 @@ def main():
 
 		if aes_round < 11:
 			w3_gee = g_function(w3[2:], aes_round)
-		#print("w3 g_function value:", w3_gee)
 
 		aes_round += 1
 
-	print("Total Key:", total_key)
-	# print("Size:", len(total_key))
+	print("\nTotal Key:")
+	for i in range(len(total_key)):
+		if i % 32 == 0:
+			print("")
+		print(total_key[i], end = '')
+
+	print("")
 
 def indiv_words(hex_values):
 	w1 = ''; w2 = ''; w3 = ''; w4 = ''
@@ -58,8 +62,6 @@ def indiv_words(hex_values):
 	for i in range(16):
 		indiv_values = (random.choice(hex_values), random.choice(hex_values))
 		word_matrix.append(indiv_values)
-
-	# print(word_matrix)
 
 	for i in range(len(word_matrix)):
 		val = word_matrix[i]
@@ -76,26 +78,16 @@ def indiv_words(hex_values):
 			w4 += val[0]
 			w4 += val[1]
 
-	# print(type(w1))
-	# print("w1:", w1)
-	# print("w2:", w2)
-	# print("w3:", w3)
-	# print("w4:", w4)
-
 	return w1, w2, w3, w4
-
-# def byte_shift(l, n):
-#     return l[n:] + l[:n]
 
 def g_function(word, round):
 	# this section for shifting
 	new_word = "0x"
-	# print("Original:", word)
+
 	shifted = word[2:] + word[:2]
-	# print("Shifted:", shifted)
+
 	int_values = []
 	int_values.extend(shifted)
-	# print("int_values:", int_values)
 	
 	# shifts completed
 	# S box
@@ -122,39 +114,21 @@ def g_function(word, round):
 	# for two letters/numbers going in, 1st num/letter (n1) is int(n1) x 16 + int(n2) for location in tuple
 	new_word = '0x'
 
-	# for i in int_values:
-	# 	print(int(i, 16))
 	while int_values:
 		temp = int(int_values.pop(0), 16)
-		# print("temp1:", temp)
+
 		temp2 = int(int_values.pop(0), 16)
-		# print("temp2:", temp2)
+
 		temp *= 16
 		temp += temp2 # gets location in Sbox 
-		# print("Location:", temp)
-		# print("Sbox:", hex(Sbox[temp]))
+
 		value = str(hex(Sbox[temp]))
 		new_word += s_box_extract(value)
 
-	# print("new word:", new_word)
-
-	#rc_value = "0x"
 	rc_value = rc_extract(round) # 1st round, index 1st - 1 = 0
-	# print("RC:", rc_value)
 	final_word = hex(int(new_word, 16) ^ int(rc_value, 16))
-	# print("XOR:", final_word)
-	# print("Type:", type(final_word))
 
 	return final_word[2:]
-	# print("Sbox:", hex(Sbox[0]))
-	# print("Sbox2:", hex(Sbox[1]))
-	# temp = str(hex(Sbox[0]))
-	# temp2 = str(hex(Sbox[1]))
-	# temp3 = str(hex(Sbox[2]))
-	# temp4 = str(hex(Sbox[3]))
-	# print("temp:", temp)
-	# new_word += s_box_extract(temp, temp2, temp3, temp4)
-	# print("new word:",new_word)
 
 def s_box_extract(hex1):
 	if len(hex1) == 3:
