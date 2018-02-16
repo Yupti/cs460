@@ -1,3 +1,8 @@
+# Aaron Reyes
+# CS 460.01 Secure Communication
+# Dr. Abdelfattah Amamra
+# Assignment #2
+
 import random
 
 def main():
@@ -8,7 +13,7 @@ def main():
 		if choice == 1:
 			manual_input()
 		elif choice == 2:
-			random_key_generation() #values hold individual hex values
+			random_key_generation() 
 		elif choice == 3:
 			print("Thank you for using this program!")
 			running = False
